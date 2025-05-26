@@ -8,13 +8,14 @@ use Illuminate\Http\Request;
 class ControllerUser extends Controller
 {
     public function index(){
-        $users = Users::with('Departments')->get();
-        return view('Users.index', compact('Users'));
+       // $users = Users::with('departments')->get();
+        $users = DB::table("users")->join('departmnts', 'users.department_id', '=', 'departments.id') -> select('users.id', 'users.name','users.email','departments.name as department_name', 'department.id as departments_id') -> get();
+        return view('index', compact('users'));
     }
 
     public function destroy($id){
         Users::destroy($id);
-        return redirect()->route('Users.index')->with('success', 'user deleted!');
+        $users = Users::with('departments')->get();
+        return view('index', compact('users'));
     }
-
 }
